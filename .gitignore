@@ -2,4 +2,3 @@ deprecated
 test.go
 tmp
 .air.toml
-cmd/testserver/
