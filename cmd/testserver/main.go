@@ -16,6 +16,6 @@ func main() {
 	})
 	serve := middleware.Serve(mux)
 
-	fmt.Println("Server startd at localhost:6961")
+	fmt.Println("Server startd at http://localhost:6961")
 	http.ListenAndServe(":6961", serve)
 }

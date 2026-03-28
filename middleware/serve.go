@@ -2,12 +2,16 @@ package middleware
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"strings"
 )
+
+//TODO: change
+const TEST_JS_NAME   = "BIG_GLOB_GOLD.js"
 
 func Serve(next http.Handler) http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) {
@@ -21,8 +25,8 @@ func Serve(next http.Handler) http.Handler {
 			if bytes.Contains(body, []byte("<html")) && bytes.Contains(body, []byte("</html")) {
 				rep := "</head>"
 				if bytes.Contains(body, []byte(rep)) {
-					extra := []byte(`<script type="text/javascript">alert("gando!");</script>`)
-					body = bytes.Replace(body, []byte(rep), append(extra, []byte(rep)...), 1)
+					script := []byte(fmt.Sprintf(`<script type="text/javascript">%s</script>`, getScript()))
+					body = bytes.Replace(body, []byte(rep), append(script, []byte(rep)...), 1)
 				} else {
 					log.Println("no head tag found")
 				}
@@ -35,4 +39,15 @@ func Serve(next http.Handler) http.Handler {
 		w.Write(body)
 	}
 	return http.HandlerFunc(fn)
+}
+
+func getScript() string {
+	f, err := os.ReadFile(TEST_JS_NAME)
+	if errors.Is(err, os.ErrNotExist) {
+		return `alert("cannot find script file");`
+	}
+	if err != nil {
+		return fmt.Sprintf(`alert("error: %v")`, err)
+	}
+	return string(f)
 }
