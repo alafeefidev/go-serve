@@ -1,0 +1,15 @@
+env_files = []
+
+[main]
+main_path = "main.go"
+build_commands = [] # Extra commands with go build ["flag", "value"]
+pre_command = "" # command to execute before running the script
+post_command = "" # ^ after
+
+[websocket]
+start_websocket = true
+websocket_port = ""
+
+[screen]
+clear_on_start = false
+auto_clear = false
